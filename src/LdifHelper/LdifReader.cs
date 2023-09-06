@@ -322,7 +322,7 @@ public class LdifReader
                     {
                         throw new LdifReaderException($"Line {ldifReader.lineNumber}: Invalid attrval-spec in change-modify entry: \"{modSpecAttributeTypeString}\".");
                     }
-
+                    var modSpecDeleteTypeString = modSpecAttributeTypeString;
                     // Consume all related entries up to SEP.
                     var values = new List<object>();
                     while (ldifReader.textReader.Peek() != '-')
@@ -344,11 +344,15 @@ public class LdifReader
                         ldifReader.ParseLine(line, out var modAttributeType, out var modAttributeValue);
 
                         // Validate mod-spec.
-                        if (!string.Equals(modSpecAttributeTypeString, modAttributeType, StringComparison.OrdinalIgnoreCase))
+                        if (!string.Equals(modSpecAttributeTypeString, modAttributeType, StringComparison.OrdinalIgnoreCase) &&
+                            !string.Equals($"{modSpecAttributeTypeString};binary", modAttributeType, StringComparison.OrdinalIgnoreCase))
                         {
                             throw new LdifReaderException($"Line {ldifReader.lineNumber}: Inconsistent changetype modify entry, expected \"{modSpecAttributeTypeString}\" but found \"{modAttributeType}\".");
                         }
-
+                        if(string.Equals($"{modSpecAttributeTypeString};binary", modAttributeType, StringComparison.OrdinalIgnoreCase))
+                        {
+                            modSpecAttributeTypeString = modAttributeType;
+                        }
                         values.Add(modAttributeValue);
                     }
 
@@ -357,7 +361,7 @@ public class LdifReader
                     ldifReader.lineNumber++;
 
                     // Complete modify entry.
-                    ldifReader.modifyEntries.Add(new ModSpec(modSpec, modSpecAttributeTypeString, values));
+                    ldifReader.modifyEntries.Add(new ModSpec(modSpec, modSpecAttributeTypeString, modSpecDeleteTypeString, values));
 
                     break;
 

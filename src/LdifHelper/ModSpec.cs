@@ -20,7 +20,17 @@ public class ModSpec : IEnumerable<object>
     /// <param name="modSpecType">The type of mod-spec operation.</param>
     /// <param name="attributeType">The attribute type associated with the mod-spec operation.</param>
     /// <param name="attributeValues">The attribute values associated with the mod-spec operation.</param>
-    public ModSpec(ModSpecType modSpecType, string attributeType, IEnumerable<object> attributeValues)
+    public ModSpec(ModSpecType modSpecType, string attributeType, IEnumerable<object> attributeValues):this(modSpecType, attributeType,attributeType, attributeValues){}
+
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ModSpec"/> class.
+    /// </summary>
+    /// <param name="modSpecType">The type of mod-spec operation.</param>
+    /// <param name="attributeType">The attribute type associated with the mod-spec operation.</param>
+    /// <param name="attributeDeleteType">The attribute type associated with the mod-spec operation for deletion.</param>
+    /// <param name="attributeValues">The attribute values associated with the mod-spec operation.</param>
+    public ModSpec(ModSpecType modSpecType, string attributeType, string attributeDeleteType, IEnumerable<object> attributeValues)
     {
         if (!Enum.IsDefined(typeof(ModSpecType), modSpecType))
         {
@@ -39,6 +49,7 @@ public class ModSpec : IEnumerable<object>
 
         this.ModSpecType = modSpecType;
         this.AttributeType = attributeType;
+        AttributeDeleteType = attributeDeleteType;
         this.attributeValues = attributeValues is null ? new List<object>() : new List<object>(attributeValues);
 
         if (this.ModSpecType == ModSpecType.Add
@@ -53,6 +64,11 @@ public class ModSpec : IEnumerable<object>
     /// </summary>
     /// <value>The attribute type for the mod-spec operation.</value>
     public string AttributeType { get; }
+    /// <summary>
+    /// Gets the attribute type for the mod-spec operation for delete.
+    /// </summary>
+    /// <value>The attribute type for the mod-spec operation for delete.</value>
+    public string AttributeDeleteType { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets the attribute values for the mod-spec operation.

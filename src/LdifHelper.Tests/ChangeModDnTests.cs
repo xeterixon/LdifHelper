@@ -1,6 +1,7 @@
 ﻿namespace LdifHelper.Tests;
 
 using System;
+using System.Xml.Serialization;
 using Xunit;
 
 /// <summary>
@@ -9,6 +10,8 @@ using Xunit;
 public class ChangeModDnTests
 {
     private const string DistinguishedName = "CN=Sophie Germain,OU=users,DC=company,DC=com";
+    // Comma (,) can have leading and trailing whitespaces. This is a DN with some combinations of spaces around the comma
+    private const string DnWithSpaces = "CN=Anders Andersson [aan123]\t, OU=admins,DC=company, DC=com";
 
     private static readonly string DumpNewRdn = string.Join(
         Environment.NewLine,
@@ -171,5 +174,18 @@ public class ChangeModDnTests
         Assert.True(sut.DeleteOldRdn);
         Assert.Equal(NewSuperior, sut.NewSuperior);
         Assert.Equal(DumpNewSuperior, sut.Dump());
+    }
+    [Fact]
+    public void ShouldProcessDnWithSpaces()
+    {
+        //Testing the RegEx
+        var comps = Constants.DistinguishedNameRegex.Split(DnWithSpaces);
+        Assert.Equal(4,comps.Length);
+        Assert.NotEqual('\t', comps[0].Last());
+        Assert.NotEqual(' ', comps[1].First());
+        //Creating a new ChangeModDn should not throw.
+        var change = new ChangeModDn(DnWithSpaces, null, true, NewSuperior);
+        Assert.NotNull(change);
+        
     }
 }
