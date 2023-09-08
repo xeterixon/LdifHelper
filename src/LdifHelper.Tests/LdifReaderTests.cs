@@ -1535,4 +1535,27 @@ public class LdifReaderTests
         // Act, Assert.
         Assert.Throws<LdifReaderException>(() => LdifReader.Parse(streamReader).ToArray());
     }
+    [Fact]
+    public void ShouldReadBinaryOption()
+    {
+        var dump = string.Join(
+            Environment.NewLine,
+            "version: 1",
+            "dn: CN=Ada Lovelace,OU=users,DC=company,DC=com",
+            "changetype: modify",
+            "add: userCertificate",
+            $"userCertificate;binary: {Convert.ToBase64String(Encoding.UTF8.GetBytes("A Chunk of data"))}",
+            "-",
+            "add: validNotAfter",
+            "validNotAfter: 20231129225800Z",
+            "-",
+            "add: validNotBefore",
+            "validNotBefore: 20230602054519Z",
+            "-",
+            string.Empty);
+        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(dump));
+        using var memoryStreamReader = new StreamReader(memoryStream);
+        var records = LdifReader.Parse(memoryStreamReader).ToArray();
+        Assert.Single(records);
+    }
 }

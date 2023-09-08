@@ -69,6 +69,11 @@ public class ChangeAdd : IChangeRecord, IEnumerable<LdifAttribute>
     public IEnumerable<LdifAttribute> LdifAttributes => this.ldifAttributes.Values;
 
     /// <summary>
+    /// Get the change type.
+    /// </summary>
+    public ChangeType Change => ChangeType.Add;
+
+    /// <summary>
     /// Gets the <see cref="LdifAttribute"/> for the specified attribute type.
     /// </summary>
     /// <param name="attributeType">The attribute type whose value will be retrieved.</param>

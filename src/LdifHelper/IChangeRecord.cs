@@ -12,6 +12,11 @@ public interface IChangeRecord
     string DistinguishedName { get; }
 
     /// <summary>
+    /// Get the change type.
+    /// </summary>
+    ChangeType Change { get; }
+
+    /// <summary>
     /// Generates an RFC2849 LDIF string representation for the record.
     /// </summary>
     /// <returns>The RFC2849 LDIF string representation for the record.</returns>

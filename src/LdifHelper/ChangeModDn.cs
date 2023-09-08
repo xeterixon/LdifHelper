@@ -102,6 +102,12 @@ public class ChangeModDn : IChangeRecord
     public string NewSuperior { get; }
 
     /// <summary>
+    /// Get the change type.
+    /// </summary>
+    public ChangeType Change => ChangeType.ModDn;
+
+
+    /// <summary>
     /// Generates an RFC2849 LDIF string representation for the record.
     /// </summary>
     /// <returns>The RFC2849 LDIF string representation for the record.</returns>

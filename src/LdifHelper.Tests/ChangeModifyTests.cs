@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Text;
 using Xunit;
 
 /// <summary>
@@ -256,5 +257,41 @@ public class ChangeModifyTests
 
         // Assert.
         Assert.Equal(dump, sut.Dump());
+    }
+    [Fact]
+    public void ChangeTypeIsValid()
+    {
+        // Arrange.
+        ModSpec[] modSpec = { new(ModSpecType.Replace, "telephonenumber", null) };
+        var dump = string.Join(
+            Environment.NewLine,
+            "dn: CN=Leonardo Pisano Bigollo,OU=users,DC=company,DC=com",
+            "changetype: modify",
+            "replace: telephonenumber",
+            "-",
+            string.Empty);
+
+        // Act.
+        IChangeRecord record = new ChangeModify(DistinguishedName, modSpec);
+        Assert.Equal(ChangeType.Modify, record.Change);
+    }
+    [Fact]
+    public void ShouldParseBinaryOption()
+    {
+        // Arrange.
+        ModSpec[] modSpec = { new(ModSpecType.Delete, "userCertificate","userCertificate;binary", new object[] { Encoding.ASCII.GetBytes("Random binary data") }) };
+        var dump = string.Join(
+            Environment.NewLine,
+            "dn: CN=Leonardo Pisano Bigollo,OU=users,DC=company,DC=com",
+            "changetype: modify",
+            "delete: userCertificate",
+            "userCertificate;binary:: UmFuZG9tIGJpbmFyeSBkYXRh",
+            "-",
+            string.Empty);
+
+        // Act.
+        IChangeRecord record = new ChangeModify(DistinguishedName, modSpec);
+        var rdump = record.Dump();
+        Assert.Equal(dump,rdump);
     }
 }

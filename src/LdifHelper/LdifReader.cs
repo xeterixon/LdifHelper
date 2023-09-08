@@ -343,13 +343,20 @@ public class LdifReader
 
                         ldifReader.ParseLine(line, out var modAttributeType, out var modAttributeValue);
 
+                        //HACK (of sorts). Try to match with binary option as well.
+                        //Uncertain if there are any other valid options, but to be on the safe side let's allow anything after the semicolon
+                        var option = string.Empty;
+                        if (modAttributeType.IndexOf(';') is int index && index != -1)
+                        {
+                            option = modAttributeType.Substring(index).Trim();
+                        }
                         // Validate mod-spec.
                         if (!string.Equals(modSpecAttributeTypeString, modAttributeType, StringComparison.OrdinalIgnoreCase) &&
-                            !string.Equals($"{modSpecAttributeTypeString};binary", modAttributeType, StringComparison.OrdinalIgnoreCase))
+                            !string.Equals($"{modSpecAttributeTypeString}{option}", modAttributeType, StringComparison.OrdinalIgnoreCase))
                         {
                             throw new LdifReaderException($"Line {ldifReader.lineNumber}: Inconsistent changetype modify entry, expected \"{modSpecAttributeTypeString}\" but found \"{modAttributeType}\".");
                         }
-                        if(string.Equals($"{modSpecAttributeTypeString};binary", modAttributeType, StringComparison.OrdinalIgnoreCase))
+                        if(!string.IsNullOrEmpty(option) && string.Equals($"{modSpecAttributeTypeString}{option}", modAttributeType, StringComparison.OrdinalIgnoreCase))
                         {
                             modSpecAttributeTypeString = modAttributeType;
                         }

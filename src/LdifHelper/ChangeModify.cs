@@ -65,6 +65,11 @@ public class ChangeModify : IChangeRecord, IEnumerable<ModSpec>
     public IEnumerable<ModSpec> ModSpecs => this.modSpecs;
 
     /// <summary>
+    /// Get the change type.
+    /// </summary>
+    public ChangeType Change => ChangeType.Modify;
+
+    /// <summary>
     /// Generates an RFC2849 LDIF string representation for the record.
     /// </summary>
     /// <returns>The RFC2849 LDIF string representation for the record.</returns>
@@ -88,7 +93,7 @@ public class ChangeModify : IChangeRecord, IEnumerable<ModSpec>
 
             foreach (var value in modSpecEntry.AttributeValues)
             {
-                stringBuilder.AppendLine(Extensions.GetValueSpec(modSpecEntry.AttributeType, value).Wrap());
+                stringBuilder.AppendLine(Extensions.GetValueSpec(modSpecEntry.AttributeOptionType, value).Wrap());
             }
 
             stringBuilder.AppendLine("-");

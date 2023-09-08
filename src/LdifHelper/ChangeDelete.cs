@@ -34,6 +34,11 @@ public class ChangeDelete : IChangeRecord
     public string DistinguishedName { get; }
 
     /// <summary>
+    /// Get the change type.
+    /// </summary>
+    public ChangeType Change => ChangeType.Delete;
+
+    /// <summary>
     /// Generates an RFC2849 LDIF string representation for the record.
     /// </summary>
     /// <returns>The RFC2849 LDIF string representation for the record.</returns>

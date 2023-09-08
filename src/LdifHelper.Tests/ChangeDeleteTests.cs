@@ -62,4 +62,11 @@ public class ChangeDeleteTests
         // Assert.
         Assert.Equal(DistinguishedName, sut.DistinguishedName);
     }
+    [Fact]
+    public void ChangeTypeIsValid()
+    {
+        IChangeRecord record = new ChangeDelete(DistinguishedName);
+        Assert.Equal(ChangeType.Delete, record.Change);
+    }
+
 }

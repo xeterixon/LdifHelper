@@ -198,4 +198,15 @@ public class ChangeAddTests
         // Assert.
         Assert.Equal(AttributeTypes, sut.AttributeTypes);
     }
+    [Fact]
+    public void ChangeTypeIsValid()
+    {
+        IChangeRecord record = new ChangeAdd(DistinguishedName, LdifAttributes);
+        Assert.Equal(ChangeType.Add, record.Change);
+    }
+    [Fact]
+    public void Dy()
+    {
+
+    }
 }

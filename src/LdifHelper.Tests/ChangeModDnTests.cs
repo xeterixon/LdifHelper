@@ -188,4 +188,10 @@ public class ChangeModDnTests
         Assert.NotNull(change);
         
     }
+    [Fact]
+    public void ChangeTypeIsValid()
+    {
+        IChangeRecord record = new ChangeModDn(DnWithSpaces, null, true, NewSuperior);
+        Assert.Equal(ChangeType.ModDn, record.Change);
+    }
 }
