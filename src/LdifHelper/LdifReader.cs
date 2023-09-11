@@ -322,7 +322,7 @@ public class LdifReader
                     {
                         throw new LdifReaderException($"Line {ldifReader.lineNumber}: Invalid attrval-spec in change-modify entry: \"{modSpecAttributeTypeString}\".");
                     }
-                    var modSpecDeleteTypeString = modSpecAttributeTypeString;
+                    var modSpecOptionTypeString = modSpecAttributeTypeString;
                     // Consume all related entries up to SEP.
                     var values = new List<object>();
                     while (ldifReader.textReader.Peek() != '-')
@@ -368,7 +368,7 @@ public class LdifReader
                     ldifReader.lineNumber++;
 
                     // Complete modify entry.
-                    ldifReader.modifyEntries.Add(new ModSpec(modSpec, modSpecAttributeTypeString, modSpecDeleteTypeString, values));
+                    ldifReader.modifyEntries.Add(new ModSpec(modSpec, modSpecAttributeTypeString, modSpecOptionTypeString, values));
 
                     break;
 

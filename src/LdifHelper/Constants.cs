@@ -13,7 +13,7 @@ public static class Constants
     /// Gets a REGEX that splits a distinguished name on unescaped commas.
     /// </summary>
     /// <value>The REGEX that splits a distinguished name on unescaped commas.</value>
-    public static Regex DistinguishedNameRegex { get; } = new(@"(?<=[^\\])\s*,\s*(?=\w+=)", RegexOptions.Compiled);
+    public static Regex DistinguishedNameRegex { get; } = new(@"(?<=[^\\]),\s*(?=\w+=)", RegexOptions.Compiled);
 
     /// <summary>
     /// Gets the maximum line length before a wrap is required.
