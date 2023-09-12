@@ -1540,7 +1540,6 @@ public class LdifReaderTests
     {
         var dump = string.Join(
             Environment.NewLine,
-            "version: 1",
             "dn: CN=Ada Lovelace,OU=users,DC=company,DC=com",
             "changetype: modify",
             "add: userCertificate",
@@ -1557,5 +1556,7 @@ public class LdifReaderTests
         using var memoryStreamReader = new StreamReader(memoryStream);
         var records = LdifReader.Parse(memoryStreamReader).ToArray();
         Assert.Single(records);
+        var d = records.Single().Dump();
+        Assert.Equal(dump, d);
     }
 }

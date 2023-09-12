@@ -358,7 +358,7 @@ public class LdifReader
                         }
                         if(!string.IsNullOrEmpty(option) && string.Equals($"{modSpecAttributeTypeString}{option}", modAttributeType, StringComparison.OrdinalIgnoreCase))
                         {
-                            modSpecAttributeTypeString = modAttributeType;
+                            modSpecOptionTypeString = modAttributeType;
                         }
                         values.Add(modAttributeValue);
                     }
