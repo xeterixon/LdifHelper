@@ -36,6 +36,11 @@ public class LdifReader
     private readonly bool uriEnabled;
 
     /// <summary>
+    /// Indicates if invalid mod-spec should be ignored.
+    /// </summary>
+    private readonly bool ignoreInvalidModSpec = true;
+
+    /// <summary>
     /// Indicates the current record type being parsed.
     /// </summary>
     private ChangeType changeType;
@@ -70,10 +75,12 @@ public class LdifReader
     /// </summary>
     /// <param name="textReader">The text reader instance to consume.</param>
     /// <param name="uriEnabled"><b>true</b> if URI value-spec entries are allowed, otherwise <b>false</b> to disable and throw if encountered.</param>
-    private LdifReader(TextReader textReader, bool uriEnabled)
+    /// <param name="ignoreInvalidModSpec">Ignore an invalid mod-spec, rather than throw an exception</param>
+    private LdifReader(TextReader textReader, bool uriEnabled, bool ignoreInvalidModSpec)
     {
         this.textReader = textReader ?? throw new ArgumentNullException(nameof(textReader));
         this.uriEnabled = uriEnabled;
+        this.ignoreInvalidModSpec = ignoreInvalidModSpec;
     }
 
     /// <summary>
@@ -81,10 +88,11 @@ public class LdifReader
     /// </summary>
     /// <param name="textReader">The text reader instance to consume.</param>
     /// <param name="uriEnabled"><b>true</b> if URI value-spec entries are allowed, otherwise <b>false</b> to disable and throw if encountered.</param>
+    /// <param name="ignoreInvalidModSpec">Ignore an invalid mod-spec, rather than throw an exception</param>
     /// <returns>A collection of change records.</returns>
-    public static IEnumerable<IChangeRecord> Parse(TextReader textReader, bool uriEnabled = false)
+    public static IEnumerable<IChangeRecord> Parse(TextReader textReader, bool uriEnabled = false, bool ignoreInvalidModSpec = false)
     {
-        var ldifReader = new LdifReader(textReader, uriEnabled);
+        var ldifReader = new LdifReader(textReader, uriEnabled, ignoreInvalidModSpec);
 
         string line;
         int c;
@@ -314,12 +322,14 @@ public class LdifReader
                     // Detect mod-spec.
                     if (!Enum.TryParse(modSpecString, true, out ModSpecType modSpec))
                     {
+                        if (ldifReader.ignoreInvalidModSpec) continue;
                         throw new LdifReaderException($"Line {ldifReader.lineNumber}: Invalid mod-spec in change-modify entry: \"{modSpecString}\".");
                     }
 
                     var modSpecAttributeTypeString = modSpecAttributeType as string;
                     if (string.IsNullOrWhiteSpace(modSpecAttributeTypeString))
                     {
+                        if (ldifReader.ignoreInvalidModSpec) continue;
                         throw new LdifReaderException($"Line {ldifReader.lineNumber}: Invalid attrval-spec in change-modify entry: \"{modSpecAttributeTypeString}\".");
                     }
                     var modSpecOptionTypeString = modSpecAttributeTypeString;
